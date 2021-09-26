@@ -31,52 +31,7 @@ def showScore():
     screen.blit(scoreText, (screen_width - 800, screen_height // 2 + 350))
     screen.blit(burstednum, (screen_width - 600, screen_height // 2 + 350))
 
-# class Bow(pygame.sprite.Sprite):
-#     def __init__(self):
-#         pygame.sprite.Sprite.__init__(self)
-#         self.image = bow_img
-#         self.image.set_colorkey(black)
-#         self.rect = self.image.get_rect()
-#         self.rect.centery = screen_height / 2
-#         self.rect.left = screen_width - 980
-#         self.speed_y = 0
 
-#     def update(self):
-#         self.speed_y = 0
-#         keystate = pygame.key.get_pressed()
-#         if keystate[pygame.K_UP]:
-#             self.speed_y = -5
-
-#         if keystate[pygame.K_DOWN]:
-#             self.speed_y = 5
-
-#         self.rect.y += self.speed_y
-
-#         if self.rect.bottom > screen_height:
-#             self.rect.bottom = screen_height
-        
-#         if self.rect.top < 0:
-#             self.rect.top = 0
-
-
-#     def shoot(self):
-#         arrow = Arrow(self.rect.centerx,self.rect.top + 45)
-#         all_sprites.add(arrow)
-#         arrows.add(arrow)
-
-
-# class Arrow(pygame.sprite.Sprite):
-#     def __init__(self,x,y):
-#         pygame.sprite.Sprite.__init__(self)
-#         self.image = arrow_img
-#         self.image.set_colorkey(black)
-#         self.rect = self.image.get_rect()
-#         self.rect.x = x
-#         self.rect.centery = y
-#         self.speed_x = 10
-
-#     def update(self):
-#         self.rect.x += self.speed_x
 class Splash():
 
     def __init__(self, screen, x, y):
@@ -117,10 +72,9 @@ background = screen.fill((174, 214, 241))
 balloon_img = pygame.image.load('green_balloon_50px.png')
 
 all_sprites = pygame.sprite.Group()
-# arrows = pygame.sprite.Group()
+
 balloons = pygame.sprite.Group()
-# bow = Bow()
-# all_sprites.add(bow)
+
 
 for i in range(2):
     balloon = Balloon()
@@ -128,17 +82,15 @@ for i in range(2):
     balloons.add(balloon)
 
 cap = cv2.VideoCapture(0)
-#Gets fps of your camera
+
 fps = cap.get(cv2.CAP_PROP_FPS)
-#print("fps:", fps)
-#If your camera can achieve 60 fps
-#Else just have this be 1-30 fps
+
 cap.set(cv2.CAP_PROP_FPS, 60)
 detector = htm.handDetector(detectionCon=0.8)
 clock = pygame.time.Clock()
 splash = 0
 while True:
-    #screen.fill([0,0,0])
+
     success, frame = cap.read()
     frame = cv2.resize(frame,(1300,800),fx=0,fy=0, interpolation = cv2.INTER_CUBIC)
     if not success:
@@ -151,9 +103,7 @@ while True:
     center_x = int(frame.shape[0]/2)
     center_y = int(frame.shape[0]/2)
     lmList, bboxInfo = detector.findPosition(frame)
-    # if lmList:
-    #     print("Index Finger: ", lmList[8][1], lmList[8][2])
-    #for some reasons the frames appeared inverted
+    
     frame = np.fliplr(frame)
     frame = np.rot90(frame)
     
@@ -167,7 +117,7 @@ while True:
             pygame.quit()
             sys.exit()
     for balloon in balloons:
-        #print("Balloon: ",balloon.rect ,balloon.rect.x + balloon.rect.w," : ",balloon.rect.y + balloon.rect.h)
+        
         if lmList:
             if balloon.rect.x < lmList[8][1] < balloon.rect.x + balloon.rect.w and \
                 balloon.rect.y < lmList[8][2]  < balloon.rect.y + balloon.rect.h:
@@ -185,55 +135,12 @@ while True:
                     balloon = Balloon()
                     all_sprites.add(balloon)
                     balloons.add(balloon)
-                # if score <= 0.9:
-                #     score += 1
-                # else:
-                #     score = int(score)
                 
-            # if score >1:
-            #     score = score - 1
-                # if score < 0:
-                #     score = (abs(score) + 1) + score
-
-        # if event.type == pygame.MOUSEBUTTONDOWN:
-        #     bow.shoot()
 
     screen.blit(surf, (0,0))
     all_sprites.update()
-
-    # hits = pygame.sprite.groupcollide(balloons,arrows,True,True)
-    # for hit in hits:
-    #     score += 1
-
-    #     balloon = Balloon()
-    #     all_sprites.add(balloon)
-    #     balloons.add(balloon)
-    # if splash != 0:
-    #     if splash.visible > 0:
-    #         splash.blitme()
-    #         splash.visible -= 1
     all_sprites.draw(screen)
-    # for balloon in balloons:
-    #     #print("Balloon: ",balloon.rect ,balloon.rect.x + balloon.rect.w," : ",balloon.rect.y + balloon.rect.h)
-    #     if lmList:
-    #         if balloon.rect.x < lmList[8][1] < balloon.rect.x + balloon.rect.w and \
-    #             balloon.rect.y < lmList[8][2] < balloon.rect.y + balloon.rect.h:
-                
-    #             l, _, _ = detector.findDistance(8, 4, frame)
-    #             print("Distance: ",l)
-    #             if l < 45:
-
-    #                 score += 0.5
-                    
-    #                 splash = Splash(screen,balloon.rect.x, balloon.rect.y)
-                    
-    #                 balloons.remove(balloon)
-    #                 balloon = Balloon()
-    #                 all_sprites.add(balloon)
-    #                 balloons.add(balloon)
-                # if  splash.visible > 0:
-                #         splash.blitme(balloon.rect.x, balloon.rect.y)
-                #         splash.visible -= 1
+    
     if splash != 0:
         if splash.visible > 0:
             splash.blitme()
@@ -242,7 +149,7 @@ while True:
     showScore()
 
     pygame.display.update()
-    #screen.blit(surf, (0,0))
+    
     
     pygame.display.flip()
     
